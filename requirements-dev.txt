@@ -1,0 +1,5 @@
+git+git://github.com/Kerem-Sami-Coop/caishen-dashboard@develop
+flake8==3.9.0
+pytest==6.2.2
+boto3
+requests==2.25.1

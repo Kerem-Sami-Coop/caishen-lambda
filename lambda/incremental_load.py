@@ -27,7 +27,7 @@ def stock_retrival(event, context):
     current_time = datetime.now().strftime("%d_%m_%y-%H:%M:%S")
 
     for ticker in tickers:
-        latest = retrieve_latest_date(ticker, event["file_name"])
+        # latest = retrieve_latest_date(ticker, event["file_name"])
         details = StockHistoryRequestBuilder(tickers=tickers,
                                              date_range=DateRange.fiveDay,
                                              interval=StockInterval.oneDay)

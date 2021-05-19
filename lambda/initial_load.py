@@ -17,7 +17,7 @@ def stock_retrival(event, context):
     tickers = [event["tickers"]]
     current_time = datetime.now().strftime("%d_%m_%y-%H:%M:%S")
     details = StockHistoryRequestBuilder(tickers=tickers,
-                                         date_range=DateRange.maximum,
+                                         date_range=DateRange.fiveYear,
                                          interval=StockInterval.oneDay)
     conf = details.conf
     rapid_api_response = requests.request("GET", conf["url"], headers=conf["headers"],

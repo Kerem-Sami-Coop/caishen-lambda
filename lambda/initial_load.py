@@ -6,7 +6,8 @@ import boto3
 import os
 import logging
 from botocore.exceptions import ClientError
-from datetime import datetime
+import io
+import codecs
 
 
 S3_CLIENT = boto3.client("s3")
@@ -15,7 +16,6 @@ BUCKET = os.environ["BUCKET"]
 
 def stock_retrival(event, context):
     tickers = [event["tickers"]]
-    current_time = datetime.now().strftime("%d_%m_%y-%H:%M:%S")
     details = StockHistoryRequestBuilder(tickers=tickers,
                                          date_range=DateRange.fiveYear,
                                          interval=StockInterval.oneDay)
@@ -26,11 +26,19 @@ def stock_retrival(event, context):
 
     for ticker in contents.keys():
         temp_details = contents[ticker]
-        temp_output = json.dumps(temp_details, indent=2).encode("utf-8")
+        buffer = io.BytesIO()
+        writer = codecs.getwriter("utf-8")
+        wrapper = writer(buffer)
+
+        wrapper.write(",".join(["timestamp", "close\n"]))
+        for i in range(len(temp_details["timestamp"])):
+            wrapper.write(",".join([str(temp_details["timestamp"][i]), str(temp_details["close"][i]) + "\n"]))
+
         try:
-            S3_CLIENT.put_object(Body=temp_output,
+            S3_CLIENT.put_object(Body=wrapper.getvalue(),
                                  Bucket=BUCKET,
-                                 Key=f"raw/{ticker}/{current_time}")
+                                 Key=f"{ticker}/data.csv")
+
         except ClientError as e:
             logging.error(e)
 

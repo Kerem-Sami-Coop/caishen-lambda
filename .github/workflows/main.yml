@@ -6,37 +6,19 @@ on:
       - main
 
 jobs:
-  test:
-    name: Python ${{ matrix.python-version }} tests
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [3.8, 3.9]
-    
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v1
-        with:
-          python-version: ${{ matrix.python-version }}
-
-      - name: Install Tox and any other packages
-        run: pip install tox
-
-      - name: Run Tox
-        run: tox
-
   release:
     name: Semantic Release
     runs-on: ubuntu-latest
-    needs: [test]
 
     steps:
-    - name: Fetch main
-      run: git fetch --prune origin +refs/heads/main:refs/remotes/origin/main
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
 
-    - name: Python Semantic Release
-      uses: ./
+    - name: Install Python Semantic Release
+      run: pip install python-semantic-release==7.15.4
+    
+    - name: Release 
+      run: semantic-release publish
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}

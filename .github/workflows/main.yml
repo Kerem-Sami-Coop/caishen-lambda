@@ -19,6 +19,9 @@ jobs:
       run: pip install python-semantic-release==7.15.4
     
     - name: Release 
-      run: semantic-release publish
+      run: |
+        git config --global user.name "github-actions"
+        git config --global user.email "action@github.com"
+        semantic-release publish -v DEBUG -D commit_author="github-actions <action@github.com>"
       env:
         GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

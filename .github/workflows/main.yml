@@ -1,0 +1,24 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    name: Semantic Release
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: Install Python Semantic Release
+      run: pip install python-semantic-release==7.15.4
+    
+    - name: Release 
+      run: semantic-release publish
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}

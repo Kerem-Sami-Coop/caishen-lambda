@@ -30,9 +30,9 @@ def stock_retrival(event, context):
         writer = codecs.getwriter("utf-8")
         wrapper = writer(buffer)
 
-        wrapper.write(",".join(["timestamp", "close\n"]))
+        wrapper.write(",".join(["stock", "timestamp", "close\n"]))
         for i in range(len(temp_details["timestamp"])):
-            wrapper.write(",".join([str(temp_details["timestamp"][i]), str(temp_details["close"][i]) + "\n"]))
+            wrapper.write(",".join([ticker, str(temp_details["timestamp"][i]), str(temp_details["close"][i]) + "\n"]))
 
         try:
             S3_CLIENT.put_object(Body=wrapper.getvalue(),
